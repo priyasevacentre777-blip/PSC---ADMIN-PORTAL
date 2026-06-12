@@ -74,9 +74,9 @@
                 <div class="p-4 bg-slate-50 border-b border-slate-200 flex flex-wrap gap-2 items-center justify-between">
                     <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Live Pipeline Logs</span>
                     <div class="flex space-x-1" id="filterBtnGroup">
-                        <button onclick="filterTable('All')" class="px-3 py-1 bg-slate-200 rounded text-xs font-semibold">Show All</button>
-                        <button onclick="filterTable('Pending')" class="px-3 py-1 bg-amber-100 text-amber-700 rounded text-xs font-bold">Pending Approvals Only</button>
-                        <button onclick="filterTable('Alerts')" class="px-3 py-1 bg-rose-100 text-rose-700 rounded text-xs font-bold">Cancellations Only</button>
+                        <button onclick="filterTable('All')" class="px-3 py-1 bg-slate-200 rounded text-xs font-semibold hover:bg-slate-300 transition">Show All</button>
+                        <button onclick="filterTable('Pending')" class="px-3 py-1 bg-amber-100 text-amber-700 rounded text-xs font-bold hover:bg-amber-200 transition">Pending Only</button>
+                        <button onclick="filterTable('Alerts')" class="px-3 py-1 bg-rose-100 text-rose-700 rounded text-xs font-bold hover:bg-rose-200 transition">Cancellations Only</button>
                     </div>
                 </div>
                 <table class="w-full text-left text-sm">
@@ -86,7 +86,7 @@
                             <th class="px-6 py-4">Customer Details</th>
                             <th class="px-6 py-4">Service Vector</th>
                             <th class="px-6 py-4">Current Lifecycle State</th>
-                            <th class="px-6 py-4 text-center">Toggle Actions</th>
+                            <th class="px-6 py-4 text-center">Actions</th>
                         </tr>
                     </thead>
                     <tbody id="dataTable" class="divide-y divide-slate-100">
@@ -98,6 +98,7 @@
 
         <div id="tab-override" class="tab-content">
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                
                 <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm h-fit">
                     <h3 class="font-bold text-lg mb-2 text-slate-900"><i class="fa-solid fa-phone text-rose-500 mr-2"></i>Client Search Registry</h3>
                     <p class="text-xs text-slate-400 mb-4">Input customer phone coordinates to fetch history when they call you directly.</p>
@@ -108,13 +109,19 @@
                     <div id="lookupResults" class="mt-6 space-y-2 max-h-60 overflow-y-auto"></div>
                 </div>
 
-                <div class="lg:col-span-2 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm opacity-50 pointer-events-none" id="overrideTerminal">
+                <div class="lg:col-span-2 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm opacity-50 pointer-events-none transition-opacity duration-300" id="overrideTerminal">
                     <h3 class="font-black text-xl mb-1 text-slate-900 border-b pb-3 border-slate-100"><i class="fa-solid fa-sliders text-rose-600 mr-2"></i>System Variable Override Form</h3>
                     <form id="overrideForm" onsubmit="submitOverride(event)" class="mt-4 space-y-4">
                         <input type="hidden" id="ovrId">
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div><label class="block text-xs font-bold text-slate-400 uppercase mb-1">Customer Profile Name</label><input type="text" id="ovrName" disabled class="w-full bg-slate-100 border rounded-xl p-3 font-semibold text-slate-500"></div>
-                            <div><label class="block text-xs font-bold text-slate-400 uppercase mb-1">Mobile Field Index</label><input type="text" id="ovrPhone" disabled class="w-full bg-slate-100 border rounded-xl p-3 font-semibold text-slate-500"></div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Customer Profile Name</label>
+                                <input type="text" id="ovrName" disabled class="w-full bg-slate-100 border rounded-xl p-3 font-semibold text-slate-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Mobile Field Index</label>
+                                <input type="text" id="ovrPhone" disabled class="w-full bg-slate-100 border rounded-xl p-3 font-semibold text-slate-500">
+                            </div>
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Pillar Service Classification</label>
@@ -128,9 +135,15 @@
                                 <option value="Security Guard">Security Guard</option>
                             </select>
                         </div>
-                        <div><label class="block text-xs font-bold text-slate-400 uppercase mb-1">Sub-Services Node Array (Comma Separated)</label><input type="text" id="ovrSubs" class="w-full bg-slate-50 border rounded-xl p-3 outline-none focus:border-rose-600 font-medium"></div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Sub-Services Node Array (Comma Separated)</label>
+                            <input type="text" id="ovrSubs" class="w-full bg-slate-50 border rounded-xl p-3 outline-none focus:border-rose-600 font-medium">
+                        </div>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div><label class="block text-xs font-bold text-slate-400 uppercase mb-1">Commencement Booking Date</label><input type="text" id="ovrDate" class="w-full bg-slate-50 border rounded-xl p-3 outline-none focus:border-rose-600 font-medium"></div>
+                            <div>
+                                <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Commencement Booking Date</label>
+                                <input type="text" id="ovrDate" class="w-full bg-slate-50 border rounded-xl p-3 outline-none focus:border-rose-600 font-medium">
+                            </div>
                             <div>
                                 <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Lifecycle State Key</label>
                                 <select id="ovrStatus" class="w-full bg-slate-50 border rounded-xl p-3 outline-none focus:border-rose-600 font-bold text-rose-600">
@@ -144,7 +157,9 @@
                                 </select>
                             </div>
                         </div>
-                        <button type="submit" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-black py-4 rounded-xl transition shadow-lg mt-4">Save Override Vectors & Update Client Dashboard</button>
+                        <button type="submit" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-black py-4 rounded-xl transition shadow-lg mt-4">
+                            Save Override Vectors & Update Client Dashboard
+                        </button>
                     </form>
                 </div>
             </div>
@@ -158,7 +173,9 @@
                     <input type="text" id="emailSubject" placeholder="Email Subject Header Line" class="w-full bg-slate-50 border rounded-xl p-3 outline-none focus:border-rose-600 font-medium">
                     <textarea id="emailMessage" rows="5" placeholder="Write marketing ad copy here..." class="w-full bg-slate-50 border rounded-xl p-3 outline-none focus:border-rose-600 font-medium"></textarea>
                     <input type="text" id="imageUrl" placeholder="Paste Promotional Graphic Flyer URL Link (Imgur, Postimages, or Drive link)" class="w-full bg-slate-50 border rounded-xl p-3 outline-none focus:border-rose-600 font-medium">
-                    <button onclick="sendBroadcast()" class="bg-rose-600 hover:bg-rose-700 text-white font-black px-8 py-4 rounded-xl transition shadow-md w-full">Transmit Mass Campaign Wave</button>
+                    <button onclick="sendBroadcast()" class="bg-rose-600 hover:bg-rose-700 text-white font-black px-8 py-4 rounded-xl transition shadow-md w-full">
+                        Transmit Mass Campaign Wave
+                    </button>
                 </div>
             </div>
         </div>
@@ -187,9 +204,9 @@
 
     <script>
         // ==========================================
-        // PASTE YOUR DEPLOYED GOOGLE MACRO WEB APP URL HERE
+        // PASTE YOUR NEW DEPLOYED WEB APP URL BELOW
         // ==========================================
-        const WEB_APP_URL = "YOUR_GOOGLE_WEB_APP_URL_HERE"; 
+        const WEB_APP_URL = "YOUR_WEB_APP_URL_HERE"; 
         
         let localBookingsCache = [];
         let currentEditingId = null;
@@ -217,17 +234,26 @@
                 document.getElementById('statAlerts').innerText = localBookingsCache.filter(b => b.status === "Pending Cancellation" || b.status === "Modified").length;
                 
                 renderTable(localBookingsCache);
-            } catch(e) { table.innerHTML = `<tr><td colspan="5" class="px-6 py-12 text-center text-red-500 font-bold">Sync error. Check script execution access settings.</td></tr>`; }
+            } catch(e) { 
+                table.innerHTML = `<tr><td colspan="5" class="px-6 py-12 text-center text-red-500 font-bold">Sync error. Ensure URL is correct.</td></tr>`; 
+            }
         }
 
         function renderTable(arr) {
-            const table = document.getElementById('dataTable'); table.innerHTML = '';
-            if(arr.length === 0) { table.innerHTML = `<tr><td colspan="5" class="px-6 py-12 text-center text-slate-400">No matching pipeline streams matched this filtering constraint.</td></tr>`; return; }
+            const table = document.getElementById('dataTable'); 
+            table.innerHTML = '';
+            
+            if(arr.length === 0) { 
+                table.innerHTML = `<tr><td colspan="5" class="px-6 py-12 text-center text-slate-400">No matching pipeline streams found.</td></tr>`; 
+                return; 
+            }
+            
             arr.forEach(row => {
                 let badge = "bg-yellow-50 text-yellow-700 border-yellow-200";
                 if(row.status === "Confirmed" || row.status === "Active") badge = "bg-emerald-50 text-emerald-700 border-emerald-200";
                 if(row.status === "Canceled" || row.status === "Pending Cancellation") badge = "bg-rose-50 text-rose-700 border-rose-200";
                 if(row.status === "Modified") badge = "bg-purple-50 text-purple-700 border-purple-200";
+                if(row.status === "Completed") badge = "bg-blue-50 text-blue-700 border-blue-200";
 
                 table.innerHTML += `
                 <tr class="hover:bg-slate-50/80 transition text-xs font-medium">
@@ -245,44 +271,116 @@
             if(type === 'Pending') renderTable(localBookingsCache.filter(b => b.status === "Pending"));
             if(type === 'Alerts') renderTable(localBookingsCache.filter(b => b.status === "Pending Cancellation" || b.status === "Modified"));
         }
-        function setQuickFilter(status) { switchTab('tab-workspace'); if(status === 'Alerts') filterTable('Alerts'); else renderTable(localBookingsCache.filter(b => b.status === status)); }
-        function openModal(id, st) { currentEditingId = id; document.getElementById('modalId').innerText = id; document.getElementById('newStatus').value = st; document.getElementById('statusModal').classList.remove('hidden'); }
-        function closeModal() { document.getElementById('statusModal').classList.add('hidden'); }
-        async function saveStatus() { const st = document.getElementById('newStatus').value; closeModal(); await fetch(WEB_APP_URL, { method: 'POST', body: JSON.stringify({ action: "updateStatus", id: currentEditingId, newStatus: st }) }); loadData(); }
 
-        // Override Operations
+        function setQuickFilter(status) { 
+            switchTab('tab-workspace'); 
+            if(status === 'Alerts') filterTable('Alerts'); 
+            else if(status === 'Pending') filterTable('Pending');
+            else renderTable(localBookingsCache.filter(b => b.status === status || (status === 'Confirmed' && b.status === 'Active'))); 
+        }
+
+        function openModal(id, st) { 
+            currentEditingId = id; 
+            document.getElementById('modalId').innerText = id; 
+            document.getElementById('newStatus').value = st; 
+            document.getElementById('statusModal').classList.remove('hidden'); 
+        }
+
+        function closeModal() { document.getElementById('statusModal').classList.add('hidden'); }
+        
+        async function saveStatus() { 
+            const st = document.getElementById('newStatus').value; 
+            closeModal(); 
+            await fetch(WEB_APP_URL, { method: 'POST', body: JSON.stringify({ action: "updateStatus", id: currentEditingId, newStatus: st }) }); 
+            loadData(); 
+        }
+
+        // --- OVERRIDE TERMINAL LOGIC ---
         function searchCustomer() {
-            const num = document.getElementById('lookupPhone').value.trim(); const box = document.getElementById('lookupResults'); box.innerHTML = '';
-            if(!num) return alert("Search string field empty.");
+            const num = document.getElementById('lookupPhone').value.trim(); 
+            const box = document.getElementById('lookupResults'); 
+            box.innerHTML = '';
+            
+            if(!num) return alert("Search field empty.");
+            
             const matches = localBookingsCache.filter(b => String(b.phone).includes(num));
-            if(matches.length === 0) { box.innerHTML = `<p class="text-xs text-slate-400 text-center py-4">No matched array vectors.</p>`; return; }
-            matches.forEach(m => { box.innerHTML += `<button onclick="selectOverrideTarget('${m.id}')" type="button" class="w-full text-left p-3 text-xs bg-slate-50 hover:bg-rose-50 border rounded-xl flex justify-between items-center transition font-semibold text-slate-700"><div><span class="block text-slate-900 font-bold">${m.id} (${m.category})</span><span>Starts: ${m.start}</span></div><i class="fa-solid fa-chevron-right text-slate-400"></i></button>`; });
+            if(matches.length === 0) { 
+                box.innerHTML = `<p class="text-xs text-slate-400 text-center py-4">No matched array vectors.</p>`; 
+                return; 
+            }
+            
+            matches.forEach(m => { 
+                box.innerHTML += `
+                <button onclick="selectOverrideTarget('${m.id}')" type="button" class="w-full text-left p-3 text-xs bg-slate-50 hover:bg-rose-50 border rounded-xl flex justify-between items-center transition font-semibold text-slate-700 mb-2">
+                    <div><span class="block text-slate-900 font-bold text-sm">${m.id} - ${m.category}</span><span class="text-slate-500 block mt-1">Starts: ${m.start}</span></div>
+                    <i class="fa-solid fa-chevron-right text-slate-400"></i>
+                </button>`; 
+            });
         }
 
         function selectOverrideTarget(id) {
-            const match = localBookingsCache.find(b => b.id === id); if(!match) return;
-            document.getElementById('ovrId').value = match.id; document.getElementById('ovrName').value = match.name; document.getElementById('ovrPhone').value = match.phone;
-            document.getElementById('ovrCategory').value = match.category; document.getElementById('ovrSubs').value = match.subs; document.getElementById('ovrDate').value = match.start;
-            document.getElementById('ovrStatus').value = match.status; document.getElementById('overrideTerminal').classList.remove('opacity-50', 'pointer-events-none');
+            const match = localBookingsCache.find(b => b.id === id); 
+            if(!match) return;
+            document.getElementById('ovrId').value = match.id; 
+            document.getElementById('ovrName').value = match.name; 
+            document.getElementById('ovrPhone').value = match.phone;
+            document.getElementById('ovrCategory').value = match.category; 
+            document.getElementById('ovrSubs').value = match.subs; 
+            document.getElementById('ovrDate').value = match.start;
+            document.getElementById('ovrStatus').value = match.status; 
+            document.getElementById('overrideTerminal').classList.remove('opacity-50', 'pointer-events-none');
         }
 
         async function submitOverride(e) {
-            e.preventDefault(); const btn = e.target.querySelector('button[type="submit"]'); btn.innerText = "Transmitting Override Packets...";
-            const payload = { action: "editBooking", id: document.getElementById('ovrId').value, category: document.getElementById('ovrCategory').value, subs: document.getElementById('ovrSubs').value, startDate: document.getElementById('ovrDate').value, status: document.getElementById('ovrStatus').value };
+            e.preventDefault(); 
+            const btn = e.target.querySelector('button[type="submit"]'); 
+            btn.innerText = "Transmitting Override Packets...";
+            
+            const payload = { 
+                action: "editBooking", 
+                id: document.getElementById('ovrId').value, 
+                category: document.getElementById('ovrCategory').value, 
+                subs: document.getElementById('ovrSubs').value, 
+                startDate: document.getElementById('ovrDate').value, 
+                status: document.getElementById('ovrStatus').value 
+            };
+            
             await fetch(WEB_APP_URL, { method: 'POST', body: JSON.stringify(payload) });
-            alert("Spreadsheet entry row rewritten successfully."); btn.innerText = "Commit Override Adjustments & Synchronize Dashboard";
-            document.getElementById('overrideTerminal').classList.add('opacity-50', 'pointer-events-none'); e.target.reset(); loadData(); switchTab('tab-workspace');
+            alert("Spreadsheet entry row rewritten successfully."); 
+            btn.innerText = "Save Override Vectors & Update Client Dashboard";
+            document.getElementById('overrideTerminal').classList.add('opacity-50', 'pointer-events-none'); 
+            e.target.reset(); 
+            loadData(); 
+            switchTab('tab-workspace');
         }
 
-        // Email Blaster Operations
+        // --- EMAIL BROADCAST LOGIC ---
         async function sendBroadcast() {
-            const sub = document.getElementById('emailSubject').value; const msg = document.getElementById('emailMessage').value; const img = document.getElementById('imageUrl').value;
-            if(!sub || !msg) return alert("Subject fields are mandatory data lines.");
-            const btn = event.target; btn.innerText = "Transmitting Core Email Waves...";
-            const body = `<div style="font-family: Arial, sans-serif; padding: 24px; background-color: #f8fafc; color: #334155; max-width: 600px; margin: 0 auto; border-radius: 16px; border: 1px solid #e2e8f0;"><h2 style="color: #e11d48; margin-top: 0; font-size: 24px; font-weight: 800; letter-spacing: -0.5px;">Priya Seva Center</h2><p style="font-size: 16px; line-height: 1.6; color: #475569;">${msg.replace(/\n/g, '<br>')}</p>${img ? `<img src="${img}" style="max-width: 100%; border-radius: 12px; margin-top: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);" alt="Promotional Offer">` : ''}<hr style="border: none; border-top: 1px solid #e2e8f0; margin-top: 30px; margin-bottom: 20px;"><p style="font-size: 11px; color: #94a3b8; text-align: center;">You are receiving this premium alert as a verified registered user of priyasevacentre.com</p></div>`;
+            const sub = document.getElementById('emailSubject').value; 
+            const msg = document.getElementById('emailMessage').value; 
+            const img = document.getElementById('imageUrl').value;
+            
+            if(!sub || !msg) return alert("Subject and message fields are mandatory.");
+            
+            const btn = event.target; 
+            btn.innerText = "Transmitting Wave...";
+            
+            const body = `
+            <div style="font-family: Arial, sans-serif; padding: 24px; background-color: #f8fafc; color: #334155; max-width: 600px; margin: 0 auto; border-radius: 16px; border: 1px solid #e2e8f0;">
+                <h2 style="color: #e11d48; margin-top: 0; font-size: 24px; font-weight: 800; letter-spacing: -0.5px;">Priya Seva Center</h2>
+                <p style="font-size: 16px; line-height: 1.6; color: #475569;">${msg.replace(/\n/g, '<br>')}</p>
+                ${img ? `<img src="${img}" style="max-width: 100%; border-radius: 12px; margin-top: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);" alt="Promotional Offer">` : ''}
+                <hr style="border: none; border-top: 1px solid #e2e8f0; margin-top: 30px; margin-bottom: 20px;">
+                <p style="font-size: 11px; color: #94a3b8; text-align: center;">You are receiving this premium alert as a verified registered user of priyasevacentre.com</p>
+            </div>`;
+            
             await fetch(WEB_APP_URL, { method: 'POST', body: JSON.stringify({ action: "broadcast", subject: sub, htmlBody: body }) });
-            alert("Marketing wave launched successfully!"); btn.innerText = "Transmit Campaign Broadcast";
-            document.getElementById('emailSubject').value = ''; document.getElementById('emailMessage').value = ''; document.getElementById('imageUrl').value = '';
+            
+            alert("Marketing wave launched successfully!"); 
+            btn.innerText = "Transmit Mass Campaign Wave";
+            document.getElementById('emailSubject').value = ''; 
+            document.getElementById('emailMessage').value = ''; 
+            document.getElementById('imageUrl').value = '';
         }
 
         document.addEventListener('DOMContentLoaded', loadData);
