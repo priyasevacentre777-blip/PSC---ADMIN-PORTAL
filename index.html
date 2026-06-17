@@ -3,384 +3,400 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Priya Seva Center | Admin Dashboard</title>
+    <title>Priya Seva Center | Admin App</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f1f5f9; }
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
-<body class="antialiased text-slate-800">
+<body class="antialiased text-slate-800 pb-20">
 
-    <header class="bg-slate-900 text-white h-16 px-6 flex items-center justify-between shadow-md fixed w-full top-0 z-50">
-        <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('tab-workspace')">
-            <div class="text-rose-500 text-xl"><i class="fa-solid fa-house"></i></div>
-            <span class="font-black text-lg tracking-tight uppercase hover:text-rose-400 transition">Admin Dashboard</span>
+    <!-- TOP HEADER -->
+    <header class="bg-slate-900 text-white h-16 flex items-center justify-between px-4 md:px-8 fixed w-full top-0 z-50 shadow-md">
+        <div class="font-bold text-lg flex items-center gap-2">
+            <i class="fa-solid fa-user-shield text-rose-500"></i> Admin Panel
         </div>
-        <div class="flex items-center space-x-6">
-            <div class="text-xs font-bold bg-slate-800 px-3 py-1.5 rounded-md border border-slate-700 text-emerald-400">
-                <i class="fa-solid fa-circle text-[8px] mr-1.5 animate-ping"></i> System Online
-            </div>
-            <button onclick="loadData()" class="bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold px-4 py-2 rounded-lg transition shadow-md">
-                <i class="fa-solid fa-rotate mr-1.5"></i> Refresh Data
-            </button>
-        </div>
+        <button onclick="loadData()" id="refreshBtn" class="bg-rose-600 px-3 py-1.5 rounded-lg text-sm font-bold flex items-center gap-2 shadow-sm hover:bg-rose-700 transition">
+            <i class="fa-solid fa-rotate"></i> Refresh
+        </button>
     </header>
 
-    <div class="max-w-7xl mx-auto pt-24 px-4 pb-12">
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-            <div onclick="switchTab('tab-users')" class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center cursor-pointer hover:border-blue-500 transition">
-                <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center text-xl mr-4"><i class="fa-solid fa-users"></i></div>
-                <div>
-                    <p class="text-xs uppercase font-bold text-slate-400">Total Users</p>
-                    <h3 class="text-2xl font-black text-slate-800" id="statUsers">0</h3>
-                </div>
-            </div>
-            <div onclick="setQuickFilter('Pending')" class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center cursor-pointer hover:border-amber-500 transition">
-                <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center text-xl mr-4"><i class="fa-solid fa-clock"></i></div>
-                <div>
-                    <p class="text-xs uppercase font-bold text-slate-400">Pending Requests</p>
-                    <h3 class="text-2xl font-black text-slate-800" id="statPending">0</h3>
-                </div>
-            </div>
-            <div onclick="setQuickFilter('Alerts')" class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center cursor-pointer hover:border-rose-500 transition">
-                <div class="w-12 h-12 bg-rose-50 text-rose-600 rounded-xl flex items-center justify-center text-xl mr-4"><i class="fa-solid fa-triangle-exclamation"></i></div>
-                <div>
-                    <p class="text-xs uppercase font-bold text-slate-400">Changes / Canceled</p>
-                    <h3 class="text-2xl font-black text-slate-800" id="statAlerts">0</h3>
-                </div>
-            </div>
-            <div onclick="setQuickFilter('Confirmed')" class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm flex items-center cursor-pointer hover:border-emerald-500 transition">
-                <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center text-xl mr-4"><i class="fa-solid fa-circle-check"></i></div>
-                <div>
-                    <p class="text-xs uppercase font-bold text-slate-400">Confirmed Services</p>
-                    <h3 class="text-2xl font-black text-slate-800" id="statActive">0</h3>
-                </div>
-            </div>
+    <!-- MOBILE-FRIENDLY APP CONTENT -->
+    <main class="pt-20 px-4 md:px-8 max-w-3xl mx-auto">
+        
+        <div id="loadingState" class="text-center py-20 text-slate-400 font-bold">
+            <i class="fa-solid fa-spinner fa-spin text-3xl mb-4 text-rose-500"></i><br>
+            Loading your business data...
         </div>
 
-        <div class="flex flex-wrap gap-2 border-b border-slate-300 mb-6 font-bold text-sm">
-            <button onclick="switchTab('tab-workspace')" id="btn-tab-workspace" class="px-5 py-2.5 bg-slate-900 text-white rounded-t-xl transition shadow-inner">Manage Bookings</button>
-            <button onclick="switchTab('tab-users')" id="btn-tab-users" class="px-5 py-2.5 text-slate-500 hover:text-slate-900 transition">Registered Users</button>
-            <button onclick="switchTab('tab-override')" id="btn-tab-override" class="px-5 py-2.5 text-slate-500 hover:text-slate-900 transition">Edit a Booking</button>
-            <button onclick="switchTab('tab-marketing')" id="btn-tab-marketing" class="px-5 py-2.5 text-slate-500 hover:text-slate-900 transition">Send Emails</button>
-        </div>
-
-        <div id="tab-workspace" class="tab-content active">
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-                <div class="p-4 bg-slate-50 border-b border-slate-200 flex flex-wrap gap-2 items-center justify-between">
-                    <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">All Customer Bookings</span>
-                    <div class="flex space-x-1">
-                        <button onclick="filterTable('All')" class="px-3 py-1 bg-slate-200 rounded text-xs font-semibold hover:bg-slate-300 transition">Show All</button>
-                        <button onclick="filterTable('Pending')" class="px-3 py-1 bg-amber-100 text-amber-700 rounded text-xs font-bold hover:bg-amber-200 transition">Pending</button>
-                        <button onclick="filterTable('Alerts')" class="px-3 py-1 bg-rose-100 text-rose-700 rounded text-xs font-bold hover:bg-rose-200 transition">Alerts</button>
-                    </div>
-                </div>
-                <table class="w-full text-left text-sm">
-                    <thead class="bg-slate-50 text-slate-600 uppercase font-bold text-xs border-b border-slate-200">
-                        <tr>
-                            <th class="px-6 py-4">Booking ID / Date</th>
-                            <th class="px-6 py-4">Customer Info</th>
-                            <th class="px-6 py-4">Service Details</th>
-                            <th class="px-6 py-4">Status</th>
-                            <th class="px-6 py-4 text-center">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="dataTable" class="divide-y divide-slate-100">
-                        <tr><td colspan="5" class="px-6 py-12 text-center text-slate-400">Loading data...</td></tr>
-                    </tbody>
-                </table>
+        <!-- ========================================== -->
+        <!-- TAB 1: REQUESTS -->
+        <!-- ========================================== -->
+        <div id="tab-requests" class="tab-content">
+            <h2 class="text-2xl font-extrabold text-slate-900 mb-4">Customer Requests</h2>
+            
+            <!-- Quick Filter Pills -->
+            <div class="flex space-x-2 overflow-x-auto pb-2 mb-4 scrollbar-hide">
+                <button onclick="filterRequests('Pending')" id="subtab-Pending" class="shrink-0 px-5 py-2 rounded-full font-bold text-sm bg-slate-800 text-white shadow-md transition">New Services</button>
+                <button onclick="filterRequests('Modified')" id="subtab-Modified" class="shrink-0 px-5 py-2 rounded-full font-bold text-sm bg-white text-slate-500 border border-slate-200 shadow-sm transition">Changes</button>
+                <button onclick="filterRequests('Pending Cancellation')" id="subtab-Pending Cancellation" class="shrink-0 px-5 py-2 rounded-full font-bold text-sm bg-white text-slate-500 border border-slate-200 shadow-sm transition">Cancellations</button>
             </div>
+
+            <div id="requestsContainer" class="space-y-4"></div>
         </div>
 
+        <!-- ========================================== -->
+        <!-- TAB 2: USERS -->
+        <!-- ========================================== -->
         <div id="tab-users" class="tab-content">
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-                <div class="p-4 bg-slate-50 border-b border-slate-200">
-                    <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Website Registered Users</span>
+            <h2 class="text-2xl font-extrabold text-slate-900 mb-1">Registered Users</h2>
+            <p class="text-sm text-slate-500 mb-6 font-semibold">Total Accounts: <span id="userCount" class="text-rose-600 font-bold">0</span></p>
+
+            <div id="usersContainer" class="space-y-3"></div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- TAB 3: CONTROL CENTRE -->
+        <!-- ========================================== -->
+        <div id="tab-control" class="tab-content">
+            <h2 class="text-2xl font-extrabold text-slate-900 mb-2">Control Centre</h2>
+            <p class="text-sm text-slate-500 mb-6 font-semibold">Search by Phone, Email, or Service ID to quickly edit a customer's booking.</p>
+            
+            <!-- Search Bar -->
+            <div class="flex bg-white border-2 border-slate-200 rounded-2xl overflow-hidden focus-within:border-rose-500 transition shadow-sm mb-6">
+                <input type="text" id="searchInput" placeholder="Search customer..." class="flex-1 p-4 outline-none text-sm font-bold">
+                <button onclick="performSearch()" class="bg-slate-900 text-white px-6 font-bold hover:bg-slate-800 transition">Find</button>
+            </div>
+
+            <div id="searchResults" class="space-y-3 mb-6"></div>
+
+            <!-- Edit Form (Hidden until clicked) -->
+            <div id="editForm" class="hidden bg-white p-5 rounded-2xl border border-slate-200 shadow-lg">
+                <div class="flex justify-between items-center mb-4 border-b border-slate-100 pb-3">
+                    <h3 class="font-bold text-lg text-slate-900">Edit Customer Booking</h3>
+                    <button onclick="closeEditForm()" class="text-slate-400 text-2xl hover:text-rose-600 transition"><i class="fa-solid fa-xmark"></i></button>
                 </div>
-                <table class="w-full text-left text-sm">
-                    <thead class="bg-slate-50 text-slate-600 uppercase font-bold text-xs border-b border-slate-200">
-                        <tr>
-                            <th class="px-6 py-4">Full Name</th>
-                            <th class="px-6 py-4">Phone Number</th>
-                            <th class="px-6 py-4">Email Address</th>
-                        </tr>
-                    </thead>
-                    <tbody id="usersTable" class="divide-y divide-slate-100">
-                        <tr><td colspan="3" class="px-6 py-12 text-center text-slate-400">Loading users...</td></tr>
-                    </tbody>
-                </table>
+                
+                <input type="hidden" id="editId">
+                
+                <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Main Service</label>
+                <select id="editCategory" class="w-full border-2 border-slate-100 p-3 rounded-xl mb-4 bg-slate-50 font-bold text-slate-700 outline-none focus:border-rose-500">
+                    <option value="Maid / Aya">Maid / Aya</option>
+                    <option value="Nurse / Elder Care">Nurse / Elder Care</option>
+                    <option value="Physiotherapy / Health Check-ups">Physiotherapy / Health Check-ups</option>
+                    <option value="Babysitters">Babysitters</option>
+                    <option value="Pet Sitters">Pet Sitters</option>
+                    <option value="Drivers">Drivers</option>
+                    <option value="Security Guard">Security Guard</option>
+                </select>
+
+                <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Selected Services</label>
+                <input type="text" id="editSubs" class="w-full border-2 border-slate-100 p-3 rounded-xl mb-4 bg-slate-50 font-bold text-slate-700 outline-none focus:border-rose-500">
+
+                <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Start Date</label>
+                <input type="date" id="editDate" class="w-full border-2 border-slate-100 p-3 rounded-xl mb-4 bg-slate-50 font-bold text-slate-700 outline-none focus:border-rose-500">
+
+                <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Booking Status</label>
+                <select id="editStatus" class="w-full border-2 border-slate-100 p-3 rounded-xl mb-6 bg-rose-50 text-rose-600 font-black outline-none focus:border-rose-500">
+                    <option value="Pending">New Request (Pending)</option>
+                    <option value="Active">Ongoing Service (Active)</option>
+                    <option value="Modified">Change Requested</option>
+                    <option value="Pending Cancellation">Cancellation Requested</option>
+                    <option value="Canceled">Canceled</option>
+                    <option value="Completed">Completed</option>
+                </select>
+
+                <button onclick="saveEdit()" id="saveEditBtn" class="w-full bg-rose-600 text-white font-black py-4 rounded-xl shadow-md hover:bg-rose-700 transition">
+                    Save Changes to Dashboard
+                </button>
             </div>
         </div>
 
-        <div id="tab-override" class="tab-content">
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm h-fit">
-                    <h3 class="font-bold text-lg mb-2 text-slate-900"><i class="fa-solid fa-phone text-rose-500 mr-2"></i>Find by Phone</h3>
-                    <p class="text-xs text-slate-500 mb-4">Enter a customer's phone number to find and edit their booking when they call you.</p>
-                    <div class="space-y-3">
-                        <input type="tel" id="lookupPhone" placeholder="e.g. 7439392803" class="w-full bg-slate-50 border rounded-xl p-3 outline-none focus:border-rose-600 font-semibold">
-                        <button onclick="searchCustomer()" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 rounded-xl transition shadow-md">Search Bookings</button>
-                    </div>
-                    <div id="lookupResults" class="mt-6 space-y-2 max-h-60 overflow-y-auto"></div>
-                </div>
-
-                <div class="lg:col-span-2 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm opacity-50 pointer-events-none transition-opacity duration-300" id="overrideTerminal">
-                    <h3 class="font-black text-xl mb-1 text-slate-900 border-b pb-3 border-slate-100"><i class="fa-solid fa-pen-to-square text-rose-600 mr-2"></i>Edit Booking Details</h3>
-                    <form id="overrideForm" onsubmit="submitOverride(event)" class="mt-4 space-y-4">
-                        <input type="hidden" id="ovrId">
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Customer Name</label>
-                                <input type="text" id="ovrName" disabled class="w-full bg-slate-100 border rounded-xl p-3 font-semibold text-slate-500">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Phone Number</label>
-                                <input type="text" id="ovrPhone" disabled class="w-full bg-slate-100 border rounded-xl p-3 font-semibold text-slate-500">
-                            </div>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Main Service Category</label>
-                            <select id="ovrCategory" class="w-full bg-slate-50 border rounded-xl p-3 outline-none focus:border-rose-600 font-medium">
-                                <option value="Maid / Aya">Maid / Aya</option>
-                                <option value="Nurse / Elder Care">Nurse / Elder Care</option>
-                                <option value="Physiotherapy / Health Check-ups">Physiotherapy / Health Check-ups</option>
-                                <option value="Babysitters">Babysitters</option>
-                                <option value="Pet Sitters">Pet Sitters</option>
-                                <option value="Drivers">Drivers</option>
-                                <option value="Security Guard">Security Guard</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Selected Sub-Services</label>
-                            <input type="text" id="ovrSubs" class="w-full bg-slate-50 border rounded-xl p-3 outline-none focus:border-rose-600 font-medium">
-                        </div>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Start Date</label>
-                                <input type="date" id="ovrDate" class="w-full bg-slate-50 border rounded-xl p-3 outline-none focus:border-rose-600 font-medium">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Current Status</label>
-                                <select id="ovrStatus" class="w-full bg-slate-50 border rounded-xl p-3 outline-none focus:border-rose-600 font-bold text-rose-600">
-                                    <option value="Pending">Pending</option>
-                                    <option value="Confirmed">Confirmed</option>
-                                    <option value="Active">Active</option>
-                                    <option value="Canceled">Canceled</option>
-                                    <option value="Pending Cancellation">Pending Cancellation</option>
-                                    <option value="Modified">Modified</option>
-                                    <option value="Completed">Completed</option>
-                                </select>
-                            </div>
-                        </div>
-                        <button type="submit" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-black py-4 rounded-xl transition shadow-lg mt-4">
-                            Save Changes to Customer Dashboard
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-
+        <!-- ========================================== -->
+        <!-- TAB 4: MARKETING -->
+        <!-- ========================================== -->
         <div id="tab-marketing" class="tab-content">
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 max-w-3xl mx-auto">
-                <h2 class="text-2xl font-black text-slate-900 mb-1"><i class="fa-solid fa-envelope text-rose-600 mr-2"></i>Send Mass Emails</h2>
-                <p class="text-slate-500 text-sm mb-6">Send a promotional email or announcement to every registered user on your site.</p>
-                <div class="space-y-4">
-                    <input type="text" id="emailSubject" placeholder="Subject (e.g., Special Festive Discount!)" class="w-full bg-slate-50 border rounded-xl p-3 outline-none focus:border-rose-600 font-medium">
-                    <textarea id="emailMessage" rows="5" placeholder="Write your email message here..." class="w-full bg-slate-50 border rounded-xl p-3 outline-none focus:border-rose-600 font-medium"></textarea>
-                    <input type="text" id="imageUrl" placeholder="Paste Image Link here (Optional - adds a flyer to the email)" class="w-full bg-slate-50 border rounded-xl p-3 outline-none focus:border-rose-600 font-medium">
-                    <button onclick="sendBroadcast()" class="bg-rose-600 hover:bg-rose-700 text-white font-black px-8 py-4 rounded-xl transition shadow-md w-full">
-                        Send Email to All Users
-                    </button>
+            <h2 class="text-2xl font-extrabold text-slate-900 mb-2">Send Emails</h2>
+            <p class="text-sm text-slate-500 mb-6 font-semibold">Instantly send a promo or message to everyone who has created an account.</p>
+
+            <div class="space-y-4 bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Email Subject</label>
+                    <input type="text" id="emailSubject" class="w-full bg-slate-50 border-2 border-slate-100 rounded-xl p-4 outline-none focus:border-rose-500 font-bold" placeholder="e.g. Festival Discount!">
                 </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Message</label>
+                    <textarea id="emailMessage" rows="5" class="w-full bg-slate-50 border-2 border-slate-100 rounded-xl p-4 outline-none focus:border-rose-500 font-bold" placeholder="Write your message here..."></textarea>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-400 uppercase mb-1">Image Link (Optional Flyer)</label>
+                    <input type="text" id="imageUrl" class="w-full bg-slate-50 border-2 border-slate-100 rounded-xl p-4 outline-none focus:border-rose-500 font-bold text-sm" placeholder="Paste image link here">
+                </div>
+                
+                <button onclick="sendEmails(this)" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-black py-4 rounded-xl shadow-lg transition mt-2 flex justify-center items-center">
+                    <i class="fa-solid fa-paper-plane mr-2"></i> Send Email to Everyone
+                </button>
             </div>
         </div>
 
-    </div>
+    </main>
 
-    <div id="statusModal" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center z-50 p-4">
-        <div class="bg-white p-6 rounded-2xl w-full max-w-sm shadow-2xl">
-            <h3 class="font-black text-lg text-slate-900 mb-4">Change Booking Status</h3>
-            <p class="text-sm text-slate-500 mb-2">Booking ID: <span id="modalId" class="font-bold text-rose-600"></span></p>
-            <select id="newStatus" class="w-full border rounded-xl p-3 mb-6 outline-none focus:border-slate-900 font-bold text-rose-600 bg-slate-50">
-                <option value="Pending">Pending</option>
-                <option value="Confirmed">Confirmed</option>
-                <option value="Active">Active</option>
+    <!-- BOTTOM APP NAVIGATION -->
+    <nav class="fixed bottom-0 w-full bg-white border-t border-gray-200 flex justify-around items-center h-16 z-50 text-[10px] sm:text-xs font-bold text-slate-400 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+        <button id="nav-requests" onclick="switchTab('requests')" class="flex flex-col items-center w-1/4 transition text-rose-600">
+            <i class="fa-solid fa-bell text-lg sm:text-xl mb-1"></i> Requests
+        </button>
+        <button id="nav-users" onclick="switchTab('users')" class="flex flex-col items-center w-1/4 hover:text-slate-800 transition">
+            <i class="fa-solid fa-users text-lg sm:text-xl mb-1"></i> Users
+        </button>
+        <button id="nav-control" onclick="switchTab('control')" class="flex flex-col items-center w-1/4 hover:text-slate-800 transition">
+            <i class="fa-solid fa-sliders text-lg sm:text-xl mb-1"></i> Control
+        </button>
+        <button id="nav-marketing" onclick="switchTab('marketing')" class="flex flex-col items-center w-1/4 hover:text-slate-800 transition">
+            <i class="fa-solid fa-envelope text-lg sm:text-xl mb-1"></i> Emails
+        </button>
+    </nav>
+
+    <!-- STATUS CHANGE MODAL -->
+    <div id="statusModal" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-2xl w-full max-w-sm p-6 shadow-2xl">
+            <h3 class="font-black text-lg mb-1 text-slate-900">Change Status</h3>
+            <p class="text-xs text-slate-500 mb-4 font-semibold">Booking ID: <span id="modalBookingId" class="font-bold text-rose-600"></span></p>
+            
+            <select id="modalStatusSelect" class="w-full border-2 border-slate-100 p-4 rounded-xl mb-5 bg-slate-50 font-black text-slate-700 outline-none focus:border-rose-500">
+                <option value="Pending">New Request (Pending)</option>
+                <option value="Active">Ongoing (Active)</option>
+                <option value="Modified">Change Requested</option>
+                <option value="Pending Cancellation">Cancellation Requested</option>
                 <option value="Canceled">Canceled</option>
-                <option value="Pending Cancellation">Pending Cancellation</option>
-                <option value="Modified">Modified</option>
                 <option value="Completed">Completed</option>
             </select>
-            <div class="flex space-x-3 text-sm font-bold">
-                <button onclick="closeModal()" class="flex-1 bg-slate-100 text-slate-700 py-3 rounded-xl hover:bg-slate-200 transition">Cancel</button>
-                <button onclick="saveStatus()" class="flex-1 bg-rose-600 text-white py-3 rounded-xl hover:bg-rose-700 transition shadow-md">Save Status</button>
+
+            <div class="flex gap-2 mb-4">
+                <button onclick="closeStatusModal()" class="flex-1 bg-slate-100 hover:bg-slate-200 py-3 rounded-xl font-bold text-slate-600 transition">Cancel</button>
+                <button onclick="saveQuickStatus(this)" class="flex-1 bg-rose-600 hover:bg-rose-700 py-3 rounded-xl font-bold text-white shadow-md transition">Save</button>
             </div>
+
+            <!-- PERMANENT DELETE BUTTON -->
+            <button onclick="deleteBooking()" class="w-full text-rose-500 font-bold py-3 border border-rose-100 bg-rose-50 hover:bg-rose-600 hover:text-white rounded-xl text-sm transition">
+                <i class="fa-solid fa-trash mr-1"></i> Permanently Delete
+            </button>
         </div>
     </div>
 
+    <!-- MAIN APP SCRIPT -->
     <script>
         // ==========================================
         // PASTE YOUR NEW DEPLOYED WEB APP URL BELOW
         // ==========================================
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyZDUwjtbk5gDTQrMQyB9uvsA4r8i_6WVcT-a20mZ4hW2Zf1gYv1AFyZ72o_YdB1WWS/exec"; 
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxApShWR5gGZsbB4UtLwZn81dWqJbAx7G8c2_dak3eKCF__p9QhU1dWp3viVrOvJUuj/exec"; 
         
-        let localBookingsCache = [];
-        let currentEditingId = null;
+        let localBookings = [];
+        let localUsers = [];
+        let currentRequestTab = 'Pending'; // Default to New Requests
+        let activeModalId = null;
 
-        // FIXED: Handles all 4 tabs seamlessly
+        // --- CORE NAVIGATION ---
         function switchTab(id) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            ['workspace', 'users', 'override', 'marketing'].forEach(n => {
-                const btn = document.getElementById('btn-tab-' + n);
-                if (btn) {
-                    btn.className = (id === 'tab-' + n) ? "px-5 py-2.5 bg-slate-900 text-white rounded-t-xl transition shadow-inner" : "px-5 py-2.5 text-slate-500 hover:text-slate-900 transition font-bold text-sm";
+            document.getElementById('tab-' + id).classList.add('active');
+            
+            ['requests', 'users', 'control', 'marketing'].forEach(n => {
+                const btn = document.getElementById('nav-' + n);
+                if(btn) {
+                    if(n === id) { btn.classList.add('text-rose-600'); btn.classList.remove('text-slate-400'); } 
+                    else { btn.classList.add('text-slate-400'); btn.classList.remove('text-rose-600'); }
                 }
             });
+            window.scrollTo(0,0);
         }
 
+        // --- FETCH DATA ---
         async function loadData() {
-            const table = document.getElementById('dataTable');
-            const usersTable = document.getElementById('usersTable');
-            table.innerHTML = `<tr><td colspan="5" class="px-6 py-12 text-center text-slate-400"><i class="fa-solid fa-spinner fa-spin mr-2 text-lg"></i>Loading data...</td></tr>`;
+            const btn = document.getElementById('refreshBtn');
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Refreshing...`;
             
             try {
                 const res = await fetch(WEB_APP_URL + "?action=adminData");
                 const data = await res.json();
-                localBookingsCache = data.bookings || [];
                 
-                // Update Top Stats
-                document.getElementById('statUsers').innerText = data.users ? data.users.length : 0;
-                document.getElementById('statPending').innerText = localBookingsCache.filter(b => b.status === "Pending").length;
-                document.getElementById('statActive').innerText = localBookingsCache.filter(b => b.status === "Confirmed" || b.status === "Active").length;
-                document.getElementById('statAlerts').innerText = localBookingsCache.filter(b => b.status === "Pending Cancellation" || b.status === "Modified").length;
+                localBookings = data.bookings || [];
+                localUsers = data.users || [];
                 
-                renderTable(localBookingsCache);
-                renderUsersTable(data.users || []);
+                document.getElementById('loadingState').classList.add('hidden');
+                document.getElementById('userCount').innerText = localUsers.length;
+                
+                renderUsers();
+                filterRequests(currentRequestTab); // Re-render the active request view
+                
             } catch(e) { 
-                table.innerHTML = `<tr><td colspan="5" class="px-6 py-12 text-center text-red-500 font-bold">Connection error. Ensure URL is correct.</td></tr>`; 
+                alert("Connection failed. Check your Web App URL."); 
             }
+            btn.innerHTML = `<i class="fa-solid fa-rotate"></i> Refresh`;
         }
 
-        function renderTable(arr) {
-            const table = document.getElementById('dataTable'); 
-            table.innerHTML = '';
+        // --- TAB 1: REQUESTS LOGIC ---
+        function filterRequests(filterStatus) {
+            currentRequestTab = filterStatus;
             
-            if(arr.length === 0) { 
-                table.innerHTML = `<tr><td colspan="5" class="px-6 py-12 text-center text-slate-400">No bookings found.</td></tr>`; 
-                return; 
-            }
-            
-            arr.forEach(row => {
-                let badge = "bg-yellow-50 text-yellow-700 border-yellow-200";
-                if(row.status === "Confirmed" || row.status === "Active") badge = "bg-emerald-50 text-emerald-700 border-emerald-200";
-                if(row.status === "Canceled" || row.status === "Pending Cancellation") badge = "bg-rose-50 text-rose-700 border-rose-200";
-                if(row.status === "Modified") badge = "bg-purple-50 text-purple-700 border-purple-200";
-                if(row.status === "Completed") badge = "bg-blue-50 text-blue-700 border-blue-200";
-
-                table.innerHTML += `
-                <tr class="hover:bg-slate-50/80 transition text-xs font-medium">
-                    <td class="px-6 py-4"><span class="font-black text-slate-900 text-sm block">${row.id}</span><span class="text-slate-400">${row.date}</span></td>
-                    <td class="px-6 py-4"><span class="font-bold text-slate-800 text-sm block">${row.name}</span><span class="text-slate-500 font-semibold">${row.phone}</span></td>
-                    <td class="px-6 py-4"><span class="font-bold text-rose-600 text-xs bg-rose-50 border border-rose-100 px-2 py-0.5 rounded">${row.category}</span><br><span class="text-slate-500 text-xs block mt-1">${row.subs}</span><span class="text-slate-400 text-[10px] font-bold"><i class="fa-solid fa-calendar mr-1"></i> Date: ${row.start}</span></td>
-                    <td class="px-6 py-4"><span class="px-2.5 py-1 rounded-full border text-[10px] font-black tracking-wide uppercase ${badge}">${row.status}</span></td>
-                    <td class="px-6 py-4 text-center">
-                        <div class="flex justify-center space-x-2">
-                            <button onclick="openModal('${row.id}','${row.status}')" title="Change Status" class="w-8 h-8 bg-slate-100 hover:bg-slate-900 hover:text-white rounded-lg transition text-slate-600"><i class="fa-solid fa-pen"></i></button>
-                            <button onclick="deleteBooking('${row.id}')" title="Permanently Delete" class="w-8 h-8 bg-rose-50 hover:bg-rose-600 hover:text-white rounded-lg transition text-rose-600"><i class="fa-solid fa-trash"></i></button>
-                        </div>
-                    </td>
-                </tr>`;
+            // Update Tab UI
+            ['Pending', 'Modified', 'Pending Cancellation'].forEach(tab => {
+                const btn = document.getElementById('subtab-' + tab);
+                if(tab === filterStatus) {
+                    btn.className = "shrink-0 px-5 py-2 rounded-full font-bold text-sm bg-slate-800 text-white shadow-md transition";
+                } else {
+                    btn.className = "shrink-0 px-5 py-2 rounded-full font-bold text-sm bg-white text-slate-500 border border-slate-200 shadow-sm transition";
+                }
             });
-        }
 
-        function renderUsersTable(users) {
-            const table = document.getElementById('usersTable');
-            table.innerHTML = '';
-            if(users.length === 0) {
-                table.innerHTML = `<tr><td colspan="3" class="px-6 py-12 text-center text-slate-400">No registered users yet.</td></tr>`;
+            const container = document.getElementById('requestsContainer');
+            container.innerHTML = '';
+            
+            const filteredData = localBookings.filter(b => b.status === filterStatus);
+            
+            if(filteredData.length === 0) {
+                container.innerHTML = `<p class="text-center text-slate-400 font-semibold py-8">No requests found here.</p>`;
                 return;
             }
-            users.forEach(user => {
-                table.innerHTML += `
-                <tr class="hover:bg-slate-50 transition text-sm">
-                    <td class="px-6 py-4 font-bold text-slate-800">${user.name}</td>
-                    <td class="px-6 py-4 font-medium text-slate-600">${user.phone}</td>
-                    <td class="px-6 py-4 text-blue-600">${user.email}</td>
-                </tr>`;
+
+            filteredData.forEach(b => {
+                let statusLabel = "";
+                if(b.status === "Pending") statusLabel = "New Request";
+                if(b.status === "Modified") statusLabel = "Change Request";
+                if(b.status === "Pending Cancellation") statusLabel = "Cancel Request";
+
+                container.innerHTML += `
+                <div class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm">
+                    <div class="flex justify-between items-start mb-3">
+                        <div>
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">ID: ${b.id}</span>
+                            <h3 class="text-lg font-black text-slate-900 leading-tight">${b.name}</h3>
+                        </div>
+                        <span class="bg-rose-100 text-rose-700 text-[10px] uppercase font-black px-2.5 py-1 rounded-md tracking-wider">${statusLabel}</span>
+                    </div>
+                    
+                    <div class="bg-slate-50 p-3.5 rounded-xl mb-4 border border-slate-100">
+                        <p class="text-sm font-black text-slate-800 mb-1">${b.category}</p>
+                        <p class="text-xs text-slate-600 mb-2 font-medium leading-relaxed">${b.subs}</p>
+                        <div class="flex items-center text-[11px] font-bold text-slate-500">
+                            <i class="fa-solid fa-calendar mr-1.5 text-rose-500"></i> Start: ${b.start}
+                        </div>
+                    </div>
+
+                    <p class="text-sm font-bold text-slate-700 mb-4"><i class="fa-solid fa-phone text-slate-400 mr-2"></i> ${b.phone}</p>
+
+                    <div class="flex gap-2">
+                        <button onclick="openStatusModal('${b.id}', '${b.status}')" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3.5 rounded-xl text-sm transition">Edit Status</button>
+                        <button onclick="approveRequest('${b.id}', '${b.status}', this)" class="flex-1 bg-rose-600 hover:bg-rose-700 text-white font-bold py-3.5 rounded-xl text-sm shadow-md transition">Approve</button>
+                    </div>
+                </div>`;
             });
         }
 
-        function filterTable(type) {
-            if(type === 'All') renderTable(localBookingsCache);
-            if(type === 'Pending') renderTable(localBookingsCache.filter(b => b.status === "Pending"));
-            if(type === 'Alerts') renderTable(localBookingsCache.filter(b => b.status === "Pending Cancellation" || b.status === "Modified"));
+        // 1-Click Approve System
+        async function approveRequest(id, currentStatus, btn) {
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i>`;
+            let newStatus = "Active"; // Approving a new or changed service means it is now "Ongoing"
+            if(currentStatus === 'Pending Cancellation') newStatus = "Canceled";
+
+            await fetch(WEB_APP_URL, { method: 'POST', body: JSON.stringify({ action: "updateStatus", id: id, newStatus: newStatus }) });
+            loadData(); // Will refresh UI
         }
 
-        function setQuickFilter(status) { 
-            switchTab('tab-workspace'); 
-            if(status === 'Alerts') filterTable('Alerts'); 
-            else if(status === 'Pending') filterTable('Pending');
-            else renderTable(localBookingsCache.filter(b => b.status === status || (status === 'Confirmed' && b.status === 'Active'))); 
+        // --- STATUS MODAL & DELETE LOGIC ---
+        function openStatusModal(id, st) {
+            activeModalId = id;
+            document.getElementById('modalBookingId').innerText = id;
+            document.getElementById('modalStatusSelect').value = st;
+            document.getElementById('statusModal').classList.remove('hidden');
+        }
+        function closeStatusModal() { document.getElementById('statusModal').classList.add('hidden'); }
+
+        async function saveQuickStatus(btn) {
+            btn.innerText = "Saving...";
+            const newStatus = document.getElementById('modalStatusSelect').value;
+            await fetch(WEB_APP_URL, { method: 'POST', body: JSON.stringify({ action: "updateStatus", id: activeModalId, newStatus: newStatus }) });
+            closeStatusModal();
+            loadData();
         }
 
-        function openModal(id, st) { 
-            currentEditingId = id; 
-            document.getElementById('modalId').innerText = id; 
-            document.getElementById('newStatus').value = st; 
-            document.getElementById('statusModal').classList.remove('hidden'); 
-        }
-
-        function closeModal() { document.getElementById('statusModal').classList.add('hidden'); }
-        
-        async function saveStatus() { 
-            const st = document.getElementById('newStatus').value; 
-            closeModal(); 
-            await fetch(WEB_APP_URL, { method: 'POST', body: JSON.stringify({ action: "updateStatus", id: currentEditingId, newStatus: st }) }); 
-            loadData(); 
-        }
-
-        // NEW: Permanent Delete Function
-        async function deleteBooking(id) {
-            if(!confirm(`Are you absolutely sure you want to PERMANENTLY DELETE booking ${id}? This cannot be undone.`)) return;
+        async function deleteBooking() {
+            if(!confirm("Are you absolutely sure you want to PERMANENTLY delete this booking?")) return;
             
-            // Show loading temporarily on table
-            const table = document.getElementById('dataTable');
-            table.innerHTML = `<tr><td colspan="5" class="px-6 py-12 text-center text-rose-500 font-bold"><i class="fa-solid fa-spinner fa-spin mr-2"></i>Deleting booking ${id}...</td></tr>`;
+            closeStatusModal();
+            document.getElementById('loadingState').classList.remove('hidden');
+            document.getElementById('loadingState').innerHTML = `<i class="fa-solid fa-spinner fa-spin text-3xl mb-4 text-rose-500"></i><br>Deleting permanently...`;
             
-            await fetch(WEB_APP_URL, { method: 'POST', body: JSON.stringify({ action: "deleteBooking", id: id }) });
-            loadData(); // Refresh the list after deletion
+            await fetch(WEB_APP_URL, { method: 'POST', body: JSON.stringify({ action: "deleteBooking", id: activeModalId }) });
+            loadData();
         }
 
-        // --- EDIT A BOOKING LOGIC ---
-        function searchCustomer() {
-            const num = document.getElementById('lookupPhone').value.trim(); 
-            const box = document.getElementById('lookupResults'); 
-            box.innerHTML = '';
-            
-            if(!num) return alert("Please enter a phone number.");
-            
-            const matches = localBookingsCache.filter(b => String(b.phone).includes(num));
-            if(matches.length === 0) { 
-                box.innerHTML = `<p class="text-sm text-slate-500 text-center py-4">No bookings found for this number.</p>`; 
-                return; 
+        // --- TAB 2: USERS LOGIC ---
+        function renderUsers() {
+            const container = document.getElementById('usersContainer');
+            container.innerHTML = '';
+            if(localUsers.length === 0) {
+                container.innerHTML = `<p class="text-sm text-slate-400 font-semibold text-center py-6">No users have signed up yet.</p>`;
+                return;
             }
-            
-            matches.forEach(m => { 
-                box.innerHTML += `
-                <button onclick="selectOverrideTarget('${m.id}')" type="button" class="w-full text-left p-4 text-xs bg-slate-50 hover:bg-rose-50 border rounded-xl flex justify-between items-center transition font-semibold text-slate-700 mb-2">
-                    <div><span class="block text-slate-900 font-bold text-sm">${m.id} - ${m.category}</span><span class="text-slate-500 block mt-1">Starts: ${m.start}</span></div>
-                    <i class="fa-solid fa-chevron-right text-slate-400"></i>
-                </button>`; 
+            localUsers.forEach(u => {
+                container.innerHTML += `
+                <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex items-center justify-between">
+                    <div>
+                        <h4 class="font-black text-slate-900 text-sm">${u.name}</h4>
+                        <p class="text-xs text-slate-500 mt-1 font-semibold"><i class="fa-solid fa-phone mr-1"></i> ${u.phone}</p>
+                    </div>
+                    <div class="text-right text-[11px] font-bold text-blue-600 bg-blue-50 px-3 py-1.5 rounded-lg max-w-[140px] truncate">
+                        ${u.email}
+                    </div>
+                </div>`;
             });
         }
 
-        function selectOverrideTarget(id) {
-            const match = localBookingsCache.find(b => b.id === id); 
+        // --- TAB 3: CONTROL CENTRE (UNIVERSAL SEARCH) ---
+        function performSearch() {
+            const q = document.getElementById('searchInput').value.toLowerCase().trim();
+            if(!q) return alert("Please enter something to search.");
+
+            // Find matching phones if searching by email
+            const matchingPhones = localUsers.filter(u => u.email.toLowerCase().includes(q)).map(u => String(u.phone));
+            
+            const results = localBookings.filter(b => 
+                String(b.phone).includes(q) || 
+                String(b.id).toLowerCase().includes(q) ||
+                matchingPhones.includes(String(b.phone))
+            );
+
+            const container = document.getElementById('searchResults');
+            container.innerHTML = '';
+            
+            if(results.length === 0) {
+                container.innerHTML = `<p class="text-center text-slate-400 font-semibold py-4">No bookings found for this search.</p>`;
+                return;
+            }
+
+            results.forEach(b => {
+                let badgeColor = b.status === "Active" ? "text-emerald-500" : "text-rose-500";
+                container.innerHTML += `
+                    <div onclick="openEditForm('${b.id}')" class="bg-white border-2 border-slate-100 p-4 rounded-2xl mb-3 flex justify-between items-center cursor-pointer hover:border-rose-400 transition shadow-sm">
+                        <div>
+                            <h4 class="font-black text-slate-900">${b.name}</h4>
+                            <p class="text-xs font-bold text-slate-500 mt-1">${b.id} • <span class="${badgeColor}">${b.status}</span></p>
+                        </div>
+                        <i class="fa-solid fa-chevron-right text-slate-300"></i>
+                    </div>
+                `;
+            });
+        }
+
+        function openEditForm(id) {
+            const match = localBookings.find(b => b.id === id); 
             if(!match) return;
             document.getElementById('ovrId').value = match.id; 
             document.getElementById('ovrName').value = match.name; 
@@ -389,13 +405,16 @@
             document.getElementById('ovrSubs').value = match.subs; 
             document.getElementById('ovrDate').value = match.start;
             document.getElementById('ovrStatus').value = match.status; 
-            document.getElementById('overrideTerminal').classList.remove('opacity-50', 'pointer-events-none');
+            
+            document.getElementById('editForm').classList.remove('hidden');
+            document.getElementById('editForm').scrollIntoView({ behavior: 'smooth' });
         }
 
-        async function submitOverride(e) {
-            e.preventDefault(); 
-            const btn = e.target.querySelector('button[type="submit"]'); 
-            btn.innerText = "Saving changes...";
+        function closeEditForm() { document.getElementById('editForm').classList.add('hidden'); }
+
+        async function saveEdit() {
+            const btn = document.getElementById('saveEditBtn');
+            btn.innerText = "Saving to Dashboard...";
             
             const payload = { 
                 action: "editBooking", 
@@ -408,23 +427,20 @@
             
             await fetch(WEB_APP_URL, { method: 'POST', body: JSON.stringify(payload) });
             alert("Booking successfully updated!"); 
-            btn.innerText = "Save Changes to Customer Dashboard";
-            document.getElementById('overrideTerminal').classList.add('opacity-50', 'pointer-events-none'); 
-            e.target.reset(); 
+            btn.innerText = "Save Changes to Dashboard";
+            closeEditForm();
             loadData(); 
-            switchTab('tab-workspace');
         }
 
-        // --- EMAIL BROADCAST LOGIC ---
-        async function sendBroadcast() {
+        // --- TAB 4: MARKETING ---
+        async function sendBroadcast(btn) {
             const sub = document.getElementById('emailSubject').value; 
             const msg = document.getElementById('emailMessage').value; 
             const img = document.getElementById('imageUrl').value;
             
             if(!sub || !msg) return alert("Please fill out the Subject and Message.");
             
-            const btn = event.target; 
-            btn.innerText = "Sending emails...";
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-2"></i> Sending...`;
             
             const body = `
             <div style="font-family: Arial, sans-serif; padding: 24px; background-color: #f8fafc; color: #334155; max-width: 600px; margin: 0 auto; border-radius: 16px; border: 1px solid #e2e8f0;">
@@ -438,12 +454,13 @@
             await fetch(WEB_APP_URL, { method: 'POST', body: JSON.stringify({ action: "broadcast", subject: sub, htmlBody: body }) });
             
             alert("Emails sent successfully!"); 
-            btn.innerText = "Send Email to All Users";
+            btn.innerHTML = `<i class="fa-solid fa-paper-plane mr-2"></i> Send Email to Everyone`;
             document.getElementById('emailSubject').value = ''; 
             document.getElementById('emailMessage').value = ''; 
             document.getElementById('imageUrl').value = '';
         }
 
+        // Initialize Data on Load
         document.addEventListener('DOMContentLoaded', loadData);
     </script>
 </body>
